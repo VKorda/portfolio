@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en"> <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photographer Wiktoryia Prakofyeva</title>
+    <style>
+        /* === Базовые стили === */
+        * {
+            box-sizing: border-box;
+        }
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 80px; /* Настройте под высоту шапки */
+        }
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #fff;
+            background-color: #000;
+        }
+
+        /* === Шапка === */
+        header {
+            background-color: rgba(0, 0, 0, 0.9);
+            padding: 15px 40px;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            transition: padding 0.3s ease;
+             border-bottom: 1px solid rgba(240, 193, 75, 0.1);
+        }
+        header .brand { font-weight: bold; }
+        header nav { display: flex; align-items: center; }
+        header nav a { color: #fff; margin-left: 20px; text-decoration: none; font-weight: bold; transition: color 0.3s ease; }
+        header nav a:hover { color: #f0c14b; }
+
+        /* === Выпадающее меню языка === */
+        .lang-dropdown { position: relative; margin-left: 20px; }
+        #lang-dropdown-toggle { background: none; border: 1px solid #fff; color: #fff; padding: 5px 10px; cursor: pointer; transition: background-color 0.3s, color 0.3s; border-radius: 3px; display: flex; align-items: center; font-family: inherit; font-size: inherit; }
+        #lang-dropdown-toggle:hover, #lang-dropdown-toggle:focus, .lang-dropdown.open #lang-dropdown-toggle { background-color: #f0c14b; color: #000; border-color: #f0c14b; }
+        #lang-dropdown-toggle .dropdown-arrow { margin-left: 8px; transition: transform 0.2s ease-in-out; width: 12px; height: 12px; }
+        .lang-dropdown.open #lang-dropdown-toggle .dropdown-arrow { transform: rotate(180deg); }
+        #lang-options { position: absolute; top: 100%; right: 0; background-color: #222; border: 1px solid #444; border-radius: 4px; list-style: none; margin: 5px 0 0; padding: 5px 0; min-width: 120px; z-index: 1100; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); }
+        #lang-options.hidden { display: none; }
+        #lang-options li { margin: 0; padding: 0; }
+        #lang-options li button { background: none; border: none; color: #fff; padding: 8px 15px; width: 100%; text-align: left; cursor: pointer; font-family: inherit; font-size: 0.95em; transition: background-color 0.2s; display: block; }
+        #lang-options li button:hover, #lang-options li button:focus { background-color: #f0c14b; color: #000; outline: none; }
+
+        /* === Welcome секция (ВОССТАНОВЛЕНА К ПЕРВОНАЧАЛЬНОМУ ВИДУ) === */
+        .welcome-section {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #111;
+            padding: 20px;
+            box-sizing: border-box;
+            position: relative;
+            overflow: hidden;
+        }
+        .photo-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 20px;
+            position: relative;
+            max-width: 900px;
+            width: 100%;
+            height: 100%;
+        }
+        .photo-block {
+            position: relative;
+            overflow: hidden;
+        }
+        .photo-block img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            border-radius: 6px;
+        }
+        .central-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(255, 255, 255, 0.75);
+            padding: 30px 40px;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            font-family: 'Helvetica Neue', sans-serif;
+            font-size: 18px;
+            letter-spacing: 1px;
+            z-index: 10;
+            backdrop-filter: blur(5px);
+        }
+        .central-text h1 {
+            margin: 0;
+            font-weight: 500;
+            color: #333;
+            line-height: 1.5;
+            text-transform: none;
+        }
+        /* === Конец стилей Welcome секции === */
+
+        /* === Общие стили секций === */
+        section {
+            padding: 100px 40px;
+            position: relative;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        h2 { text-align: center; font-size: 2.5em; margin-bottom: 60px; color: #f0c14b; }
+
+        /* === Разделитель секций === */
+        .section-divider {
+            border: 0;
+            height: 1px;
+            background-image: linear-gradient(to right, rgba(17, 17, 17, 0), rgba(240, 193, 75, 0.4), rgba(17, 17, 17, 0));
+            margin: 0 auto;
+            max-width: 60%;
+            display: block;
+        }
+
+        /* === Портфолио (CSS Grid + Компактная раскладка + Преобладание вертикальных) === */
+        #portfolio {
+            background-color: #0a0a0a;
+        }
+        .portfolio {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Чуть уменьшим мин. ширину для большего кол-ва колонок */
+            /* Базовая высота строки (подбирается экспериментально) */
+            grid-auto-rows: minmax(100px, auto);
+            gap: 15px; /* Уменьшаем расстояние */
+            grid-auto-flow: dense; /* Пытаемся заполнить пустоты */
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .portfolio-item {
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: box-shadow 0.3s ease;
+            /* Сбросим aspect-ratio, пусть высота определяется контентом и grid-row */
+            /* aspect-ratio: 1 / 1; */
+             grid-column: span 1; /* По умолчанию 1 колонка */
+             grid-row: span 1;    /* По умолчанию 1 строка */
+        }
+        .portfolio-item:hover {
+            box-shadow: 0 8px 20px rgba(240, 193, 75, 0.15);
+        }
+
+        /* Широкие (2 колонки, авто или span 1-2 по высоте) */
+        .portfolio-item--wide {
+            grid-column: span 2;
+            grid-row: span 1; /* Базовая высота 1, но может растянуться */
+        }
+
+        /* Высокие (1 колонка, 2-3 строки) */
+        .portfolio-item--tall {
+             grid-column: span 1;
+             grid-row: span 2; /* Занимает 2 строки по высоте */
+        }
+
+         /* Большие квадратные (2 колонки, 2-3 строки) */
+         .portfolio-item--large-square {
+             grid-column: span 2;
+             grid-row: span 2;
+         }
+
+        .portfolio-item img {
+            width: 100%;
+            height: 100%; /* Растягиваем на всю ячейку */
+            object-fit: cover;
+            display: block;
+            border-radius: 8px;
+            background-color: #222;
+            transition: transform 0.4s ease;
+        }
+        .portfolio-item:hover img {
+            transform: scale(1.10);
+        }
+
+        /* === Цены (Стили без изменений) === */
+        #prices {
+            background-color: #111;
+        }
+        .prices {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 50px;
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .price-package {
+            background-color: #1a1a1a;
+            padding: 30px;
+            border-radius: 15px;
+            width: 100%;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            border: 1px solid #333;
+        }
+        .price-package:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(240, 193, 75, 0.15);
+        }
+        .price-package:nth-child(even) {
+             flex-direction: row-reverse;
+        }
+        .price-image {
+            flex: 0 0 45%;
+            max-width: 45%;
+            overflow: hidden;
+            border-radius: 10px;
+        }
+        .price-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 10px;
+            background-color: #333;
+            transition: transform 0.4s ease;
+        }
+         .price-package:hover .price-image img {
+            transform: scale(1.05);
+         }
+        .price-details {
+            flex: 1;
+            text-align: left;
+        }
+        .price-details h3 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: #f0c14b;
+            font-size: 1.9em;
+        }
+        .price-details p {
+            margin-bottom: 30px;
+            line-height: 1.7;
+            color: #ccc;
+            font-size: 1.05em;
+        }
+        .price-details p br { display: block; content: ""; margin-top: 8px; }
+        .price-details strong {
+            display: block;
+            margin-top: auto;
+            font-size: 1.8em;
+            color: #f0c14b;
+            text-align: right;
+            font-weight: bold;
+        }
+
+        /* === Секция "Обо мне" (Стили без изменений) === */
+        #about {
+            background: url('https://images.unsplash.com/photo-1515378791036-0648a3ef77b2') center/cover no-repeat;
+            background-attachment: fixed;
+        }
+        .about-container {
+             max-width: 960px;
+             margin: 0 auto;
+             background-color: rgba(17, 17, 17, 0.85);
+             padding: 50px;
+             border-radius: 15px;
+             box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+             border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .about-content {
+            display: flex;
+            align-items: center;
+            gap: 50px;
+        }
+        .about-image {
+            flex-basis: 280px;
+            flex-shrink: 0;
+            text-align: center;
+        }
+        .about-image img {
+            width: 100%;
+            max-width: 280px;
+            height: auto;
+            aspect-ratio: 1 / 1;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 5px solid #f0c14b;
+            background-color: #ccc;
+            display: block;
+            margin: 0 auto;
+             box-shadow: 0 0 15px rgba(240, 193, 75, 0.3);
+        }
+         .about-text {
+            flex: 1;
+            text-align: left;
+        }
+         .about-text p {
+            line-height: 1.7;
+            font-size: 1.1em;
+            margin-top: 0;
+            color: #ddd;
+        }
+
+        /* === Подвал === */
+        footer {
+            background-color: #0a0a0a;
+            color: #aaa;
+            padding: 40px;
+            text-align: center;
+            font-size: 0.95em;
+            border-top: 1px solid #222;
+            margin-top: 100px;
+        }
+        footer p { margin: 10px 0; }
+        footer a { color: #f0c14b; text-decoration: none; transition: color 0.3s; }
+        footer a:hover { color: #fff; text-decoration: underline; }
+
+
+        /* === Адаптивные стили === */
+        @media (max-width: 1024px) {
+             html { scroll-padding-top: 70px; }
+             header { padding: 12px 30px; }
+             section { padding: 80px 30px; }
+             h2 { font-size: 2.2em; }
+             .prices { max-width: 90%; }
+             .about-container { padding: 40px; max-width: 90%;}
+
+             /* Адаптация Портфолио */
+             .portfolio {
+                 grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                 gap: 15px;
+             }
+            /* Spans для планшета */
+             .portfolio-item--wide { grid-column: span 2; }
+             .portfolio-item--tall { grid-row: span 2; }
+             .portfolio-item--large-square { grid-column: span 2; grid-row: span 2; }
+
+             .section-divider { max-width: 70%; }
+        }
+
+        @media (max-width: 768px) {
+             html { scroll-padding-top: 100px; }
+
+            /* Адаптация Welcome секции (ВОССТАНОВЛЕНА) */
+            .welcome-section { height: auto; min-height: 80vh; }
+             .photo-grid {
+                grid-template-columns: 1fr; grid-template-rows: repeat(4, 1fr);
+                gap: 10px; height: auto; max-width: 90%;
+                aspect-ratio: 1 / 1.5; margin-bottom: 0;
+             }
+             .central-text {
+                 position: relative; transform: none; top: auto; left: auto;
+                 background-color: rgba(255, 255, 255, 0.75);
+                 padding: 15px 20px; border: 1px solid #ddd;
+                 box-shadow: 0 2px 8px rgba(0,0,0,0.05); text-align: center;
+                 font-size: 16px; border-radius: 6px; z-index: 10;
+                 backdrop-filter: blur(5px); margin-top: 30px;
+                 width: 90%; max-width: 400px;
+             }
+             .central-text h1 {
+                 color: #222; background: none; display: block; padding: 0;
+                 border-radius: 0; box-shadow: none; font-size: 1.2em; line-height: 1.4;
+             }
+
+             section { padding: 60px 20px; }
+             h2 { font-size: 2em; margin-bottom: 40px; }
+
+             header { padding: 15px 20px; flex-direction: column; align-items: center;}
+             header .brand { margin-bottom: 15px; text-align: center;}
+             header nav { margin-left: 0; width: 100%; justify-content: center; flex-wrap: wrap; gap: 10px 15px;}
+             header nav a { margin-left: 0; }
+             .lang-dropdown { margin-left: 15px; }
+
+             /* Адаптация "Обо мне" */
+             .about-content { flex-direction: column; gap: 30px; }
+             .about-image { width: 200px; margin: 0 auto 20px auto; }
+             .about-text { text-align: center; }
+             .about-container { padding: 30px; }
+
+            /* Адаптация Портфолио */
+            .portfolio {
+                 grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); /* Колонки еще уже */
+                 gap: 10px; /* Меньше гэп */
+            }
+            /* На мобильных ВСЕ элементы занимают 1 колонку */
+            .portfolio-item,
+            .portfolio-item--wide,
+            .portfolio-item--tall,
+            .portfolio-item--large-square {
+                grid-column: span 1;
+                grid-row: span 1; /* Сбрасываем row span */
+            }
+
+
+            /* Адаптация Цен */
+            .prices { max-width: 95%; gap: 30px;}
+            .price-package, .price-package:nth-child(even) {
+                flex-direction: column; align-items: center; gap: 25px; padding: 25px;
+            }
+            .price-image { max-width: 80%; margin-bottom: 15px; flex-basis: auto;}
+            .price-image img { border-radius: 8px; }
+            .price-details { text-align: center; width: 100%; }
+            .price-details h3 { font-size: 1.7em; }
+            .price-details p { margin-bottom: 20px; text-align: left; }
+            .price-details strong { font-size: 1.6em; text-align: center; margin-top: 20px;}
+
+            .section-divider { max-width: 80%; }
+            footer { padding: 30px 20px; margin-top: 80px;}
+        }
+
+        @media (max-width: 480px) {
+             /* Шапка уже адаптирована */
+             header nav { gap: 5px 10px;}
+             header nav a { font-size: 0.95em; }
+             .lang-dropdown { margin-top: 10px;}
+
+            /* Адаптация Welcome секции (ВОССТАНОВЛЕНА) */
+             .central-text { font-size: 14px; padding: 15px;}
+             .central-text h1 { font-size: 1.1em;}
+
+             h2 { font-size: 1.8em; margin-bottom: 30px;}
+             section { padding: 50px 15px; }
+
+             /* Адаптация "Обо мне" */
+             .about-image { width: 160px; }
+             .about-container { padding: 25px; }
+             .about-text p { font-size: 1em; }
+
+             /* Адаптация Портфолио */
+            .portfolio {
+                 grid-template-columns: 1fr; /* Строго одна колонка */
+                 gap: 10px;
+            }
+            /* Spans уже сброшены в @media (max-width: 768px) */
+
+
+            /* Адаптация Цен */
+            .prices { gap: 25px; }
+            .price-package { padding: 20px; gap: 20px;}
+            .price-image { max-width: 90%; }
+            .price-details h3 { font-size: 1.5em; }
+            .price-details p { font-size: 0.95em; line-height: 1.6; margin-bottom: 15px;}
+            .price-details strong { font-size: 1.5em; margin-top: 15px; }
+
+             .section-divider { max-width: 90%; }
+             footer { padding: 25px 15px; font-size: 0.9em; margin-top: 60px;}
+        }
+        /* === Конец стилей === */
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="brand" data-translate="photographer_name">Photographer Wiktoryia Prakofyeva</div>
+    <nav>
+        <a href="#portfolio" data-translate="nav_portfolio">Portfolio</a>
+        <a href="#prices" data-translate="nav_prices">Prices</a>
+        <a href="#about" data-translate="nav_about">About Me</a>
+        <div class="lang-dropdown">
+            <button id="lang-dropdown-toggle" type="button" aria-haspopup="true" aria-expanded="false">
+                <span id="current-lang-display">EN</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 16 16" class="dropdown-arrow"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>
+            </button>
+            <ul id="lang-options" class="hidden" role="menu">
+                <li><button role="menuitem" data-lang="en" data-display="EN">English</button></li>
+                <li><button role="menuitem" data-lang="pl" data-display="PL">Polski</button></li>
+                <li><button role="menuitem" data-lang="ru" data-display="RU">Русский</button></li>
+            </ul>
+        </div>
+    </nav>
+</header>
+
+<div class="welcome-section">
+  <div class="photo-grid">
+    <div class="photo-block photo-top-left">
+      <img src="https://picsum.photos/seed/w1/500/500" alt="Photo Grid 1">
+    </div>
+    <div class="photo-block photo-top-right">
+      <img src="https://picsum.photos/seed/w2/500/500" alt="Photo Grid 2">
+    </div>
+    <div class="photo-block photo-bottom-left">
+      <img src="https://picsum.photos/seed/w3/500/500" alt="Photo Grid 3">
+    </div>
+    <div class="photo-block photo-bottom-right">
+      <img src="https://picsum.photos/seed/w4/500/500" alt="Photo Grid 4">
+    </div>
+    <div class="photo-block central-text">
+      <h1>PHOTOGRAPH<br>WIKTORIA KORDA</h1>
+    </div>
+  </div>
+</div>
+<hr class="section-divider">
+
+<section id="portfolio">
+    <h2 data-translate="portfolio_title">Portfolio</h2>
+    <div class="portfolio">
+        <div class="portfolio-item portfolio-item--tall">
+            <img src="https://picsum.photos/seed/vt1/500/750" alt="Portfolio Tall 1">
+        </div>
+        <div class="portfolio-item portfolio-item--tall">
+            <img src="https://picsum.photos/seed/vt2/400/600" alt="Portfolio Tall 2">
+        </div>
+        <div class="portfolio-item portfolio-item--wide">
+            <img src="https://picsum.photos/seed/hw1/800/500" alt="Portfolio Wide 1">
+        </div>
+        <div class="portfolio-item portfolio-item--large-square">
+            <img src="https://picsum.photos/seed/ls1/600/600" alt="Portfolio Large Square">
+        </div>
+         <div class="portfolio-item portfolio-item--tall">
+            <img src="https://picsum.photos/seed/vt3/500/700" alt="Portfolio Tall 3">
+        </div>
+        <div class="portfolio-item"> <img src="https://picsum.photos/seed/sq1/500/500" alt="Portfolio Small Square">
+        </div>
+        <div class="portfolio-item portfolio-item--tall">
+            <img src="https://picsum.photos/seed/vt4/450/650" alt="Portfolio Tall 4">
+        </div>
+        <div class="portfolio-item portfolio-item--wide">
+            <img src="https://picsum.photos/seed/hw2/700/450" alt="Portfolio Wide 2">
+        </div>
+        <div class="portfolio-item portfolio-item--tall">
+            <img src="https://picsum.photos/seed/vt5/500/800" alt="Portfolio Tall 5">
+        </div>
+         <div class="portfolio-item portfolio-item--large-square">
+            <img src="https://picsum.photos/seed/ls1/600/600" alt="Portfolio Large Square">
+        </div>
+    </div>
+</section>
+
+<hr class="section-divider">
+
+<section id="prices">
+    <h2 data-translate="prices_title">Service Packages</h2>
+    <div class="prices">
+        <div class="price-package">
+            <div class="price-image">
+                <img src="https://picsum.photos/seed/price1/400/350" alt="Mini Package Example">
+            </div>
+            <div class="price-details">
+                <h3 data-translate="price_mini_title">Mini Package</h3>
+                <p data-translate-html="price_mini_desc"> • 30-minute photoshoot<br> • 20 professionally processed photos (color & b/w)<br> • 5 fully retouched photos<br> • Posing assistance<br> • Memorable video<br> • Guides: "How to prepare" & "How to pose" </p>
+                <strong data-translate="price_mini_cost">350 zł</strong>
+            </div>
+        </div>
+        <div class="price-package">
+             <div class="price-image">
+                 <img src="https://picsum.photos/seed/price2/400/350" alt="Standard Package Example">
+             </div>
+             <div class="price-details">
+                <h3 data-translate="price_standard_title">Standard Package</h3>
+                <p data-translate-html="price_standard_desc"> • 2-hour shoot<br> • 30 retouched photos<br> • All original files<br> • Online gallery<br> • Posing support<br> • Style consultation </p>
+                <strong data-translate="price_standard_cost">600 zł</strong>
+             </div>
+        </div>
+        <div class="price-package">
+            <div class="price-image">
+                <img src="https://picsum.photos/seed/price3/400/350" alt="Premium Package Example">
+            </div>
+            <div class="price-details">
+                 <h3 data-translate="price_premium_title">Premium Package</h3>
+                 <p data-translate-html="price_premium_desc"> • 3+ hour shoot<br> • 50 retouched photos<br> • Photo book gift<br> • Memorable video clip<br> • All original files<br> • Individual shoot concept </p>
+                 <strong data-translate="price_premium_cost">950 zł</strong>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section id="about">
+    <div class="about-container">
+        <h2 data-translate="about_title">About Me</h2>
+        <div class="about-content">
+            <div class="about-image">
+                <img src="https://picsum.photos/seed/me/300/300" alt="Photographer Wiktoryia Prakofyeva">
+            </div>
+            <div class="about-text">
+                <p data-translate="about_text">Hi! My name is Wiktoryia Prakofyeva. I'm a photographer with over 5 years of experience. I capture lively, sincere moments you'll want to revisit. Based in [City], available for travel. My focus is conveying genuine emotion and your uniqueness.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <p><span data-translate="footer_contact">Contact me:</span> <a href="mailto:wiktoryia.prakofyeva@email.com">wiktoryia.prakofyeva@email.com</a> | <span data-translate="footer_instagram">Instagram:</span> <a href="https://www.instagram.com/ваш_ник/" target="_blank" rel="noopener noreferrer">@ваш_ник</a></p>
+    <p>© <span id="current-year"></span> Wiktoryia Prakofyeva. All rights reserved.</p>
+</footer>
+
+<script>
+    // ========= Глобальные переменные и настройки =========
+    const translations = {
+         'en': { 'photographer_name': 'Photographer Wiktoryia Prakofyeva','nav_portfolio': 'Portfolio','nav_prices': 'Prices','nav_about': 'About Me','hero_title': 'Capture the Moment. Keep it Forever.','portfolio_title': 'Portfolio','prices_title': 'Service Packages','price_mini_title': 'Mini Package','price_mini_desc': '• 30-minute photoshoot<br>• 20 professionally processed photos (color & b/w)<br>• 5 fully retouched photos<br>• Posing assistance<br>• Memorable video<br>• Guides: "How to prepare" & "How to pose"','price_mini_cost': '350 zł','price_standard_title': 'Standard Package','price_standard_desc': '• 2-hour shoot<br>• 30 retouched photos<br>• All original files<br>• Online gallery<br>• Posing support<br>• Style consultation','price_standard_cost': '600 zł','price_premium_title': 'Premium Package','price_premium_desc': '• 3+ hour shoot<br>• 50 retouched photos<br>• Photo book gift<br>• Memorable video clip<br>• All original files<br>• Individual shoot concept','price_premium_cost': '950 zł','about_title': 'About Me','about_text': 'Hi! My name is Wiktoryia Prakofyeva. I\'m a photographer with over 5 years of experience. I capture lively, sincere moments you\'ll want to revisit. Based in [City], available for travel. My focus is conveying genuine emotion and your uniqueness.','footer_contact': 'Contact me:','footer_instagram': 'Instagram:'},
+         'pl': { 'photographer_name': 'Fotograf Wiktoryia Prakofyeva','nav_portfolio': 'Portfolio','nav_prices': 'Cennik','nav_about': 'O mnie','hero_title': 'Złap chwilę. Zachowaj na zawsze.','portfolio_title': 'Portfolio','prices_title': 'Pakiety usług','price_mini_title': 'Pakiet "Mini"','price_mini_desc': '• 30-minutowa sesja zdjęciowa<br>• 20 profesjonalnie obrobionych zdjęć (kolor i cz/b)<br>• 5 zdjęć z pełnym retuszem<br>• Pomoc w pozowaniu<br>• Pamiątkowe wideo<br>• Poradniki: "Jak przygotować się" i "Jak pozować"','price_mini_cost': '350 zł','price_standard_title': 'Pakiet "Standard"','price_standard_desc': '• 2 godziny sesji<br>• 30 zdjęć po retuszu<br>• Wszystkie pliki źródłowe<br>• Galeria online<br>• Wsparcie w pozowaniu<br>• Konsultacja stylistyczna','price_standard_cost': '600 zł','price_premium_title': 'Pakiet "Premium"','price_premium_desc': '• 3+ godziny sesji<br>• 50 zdjęć po retuszu<br>• Fotoksiążka w prezencie<br>• Pamiątkowy klip wideo<br>• Wszystkie pliki źródłowe<br>• Indywidualna koncepcja sesji','price_premium_cost': '950 zł','about_title': 'O mnie','about_text': 'Cześć! Nazywam się Wiktoryia Prakofyeva. Jestem fotografką z ponad 5-letnim doświadczeniem. Tworzę żywe, szczere kadry, do których chce się wracać. Pracuję w [Miasto], ale jestem gotowa dojechać do innych miast. Najważniejsze dla mnie jest przekazanie prawdziwych emocji i Twojej indywidualności.','footer_contact': 'Skontaktuj się ze mną:','footer_instagram': 'Instagram:'},
+         'ru': { 'photographer_name': 'Фотограф Виктория Пракофьева','nav_portfolio': 'Портфолио','nav_prices': 'Цены','nav_about': 'Обо мне','hero_title': 'Поймай момент. Сохрани навсегда.','portfolio_title': 'Портфолио','prices_title': 'Пакеты услуг','price_mini_title': 'Пакет «Мини»','price_mini_desc': '• 30-минутная фотосессия<br>• 20 профессионально обработанных фото (в цвете и ч/б)<br>• 5 фото с полной ретушью<br>• Помощь в позировании<br>• Памятное видео<br>• Гид: «Как подготовиться к съёмке» и «Как позировать»','price_mini_cost': '350 zł','price_standard_title': 'Пакет «Стандарт»','price_standard_desc': '• 2 часа съёмки<br>• 30 фото в ретуши<br>• Все исходники<br>• Онлайн-галерея<br>• Поддержка в позировании<br>• Консультация по стилю','price_standard_cost': '600 zł','price_premium_title': 'Пакет «Премиум»','price_premium_desc': '• 3+ часа съёмки<br>• 50 фото в ретуши<br>• Фотокнига в подарок<br>• Памятный видеоклип<br>• Все исходники<br>• Индивидуальная концепция съёмки','price_premium_cost': '950 zł','about_title': 'Обо мне','about_text': 'Привет! Меня зовут Виктория Пракофьева. Я фотограф с опытом более 5 лет. Снимаю живые, искренние кадры, которые хочется пересматривать снова и снова. Работаю в [Город], но готова к выезду в другие города. Главное для меня — передать настоящие эмоции и вашу индивидуальность.','footer_contact': 'Связаться со мной:','footer_instagram': 'Instagram:'}
+     }; // !!! ЗАМЕНИТЕ ЗАГЛУШКИ: [City]/[Miasto]/[Город], email, @ваш_ник, и все фото !!!
+
+    // ========= Функции (без изменений) =========
+    function setLanguage(lang, elements, htmlEl, langOptionsEl, currentDisplayEl) { if (!translations[lang]) return; elements.forEach(element => { const key = element.getAttribute('data-translate') || element.getAttribute('data-translate-html'); const translation = translations[lang][key]; if (translation !== undefined) { if (element.hasAttribute('data-translate-html')) element.innerHTML = translation; else element.textContent = translation; } else { console.warn(`Translation key "${key}" not found for language "${lang}".`); } }); htmlEl.setAttribute('lang', lang); const selectedOption = langOptionsEl.querySelector(`button[data-lang="${lang}"]`); if (selectedOption) currentDisplayEl.textContent = selectedOption.getAttribute('data-display') || lang.toUpperCase(); try { localStorage.setItem('preferredLanguage', lang); } catch (e) { console.error("LocalStorage is not available:", e); } }
+    function toggleDropdown(dropdownEl, optionsEl, toggleBtn) { const isOpen = dropdownEl.classList.toggle('open'); optionsEl.classList.toggle('hidden', !isOpen); toggleBtn.setAttribute('aria-expanded', isOpen); }
+
+    // ========= Инициализация при загрузке DOM =========
+    document.addEventListener('DOMContentLoaded', () => {
+        const translatableElements = document.querySelectorAll('[data-translate], [data-translate-html]');
+        const htmlTag = document.documentElement;
+        const langDropdown = document.querySelector('.lang-dropdown');
+        const dropdownToggle = document.getElementById('lang-dropdown-toggle');
+        const currentLangDisplay = document.getElementById('current-lang-display');
+        const langOptionsContainer = document.getElementById('lang-options');
+        const langOptionButtons = langOptionsContainer.querySelectorAll('button[data-lang]');
+        const yearSpan = document.getElementById('current-year');
+
+        let preferredLang = 'en'; try { const savedLang = localStorage.getItem('preferredLanguage'); if (savedLang && translations[savedLang]) preferredLang = savedLang; } catch (e) { console.error("LocalStorage not available:", e); }
+        setLanguage(preferredLang, translatableElements, htmlTag, langOptionsContainer, currentLangDisplay);
+
+        if (langDropdown && dropdownToggle && langOptionsContainer) {
+             dropdownToggle.addEventListener('click', (event) => { event.stopPropagation(); toggleDropdown(langDropdown, langOptionsContainer, dropdownToggle); });
+             langOptionButtons.forEach(button => { button.addEventListener('click', () => { const lang = button.getAttribute('data-lang'); setLanguage(lang, translatableElements, htmlTag, langOptionsContainer, currentLangDisplay); toggleDropdown(langDropdown, langOptionsContainer, dropdownToggle); }); });
+        } else { console.error("Dropdown elements not found."); }
+        document.addEventListener('click', (event) => { if (langDropdown && langDropdown.classList.contains('open') && !langDropdown.contains(event.target)) toggleDropdown(langDropdown, langOptionsContainer, dropdownToggle); });
+        document.addEventListener('keydown', (event) => { if (langDropdown && event.key === 'Escape' && langDropdown.classList.contains('open')) { toggleDropdown(langDropdown, langOptionsContainer, dropdownToggle); if(dropdownToggle) dropdownToggle.focus(); } });
+
+        try { if(yearSpan) yearSpan.textContent = new Date().getFullYear(); } catch(e){ console.error("Could not set current year:", e); }
+    });
+</script>
+
+</body>
+</html>
